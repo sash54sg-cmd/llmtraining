@@ -1,0 +1,44 @@
+"""
+Generate synthetic training data for wellness/nutrition conversations.
+This creates a JSONL file to fine-tune the conversational AI model.
+"""
+import json
+from pathlib import Path
+
+# Training conversations about nutrition, fitness, and wellness
+training_data = [
+    {"text": "User: What should I eat for breakfast?\nAssistant: A balanced breakfast might include protein like eggs, whole grains such as oatmeal, and fresh fruit. Aim for 400-500 calories with good carbs and protein to start your day."},
+    {"text": "User: I'm feeling tired and unmotivated.\nAssistant: Try taking a short 15-minute walk to boost your energy. Proper hydration, a light snack with protein, and some deep breathing exercises can also help. How's your sleep been?"},
+    {"text": "User: Can I eat pizza on a diet?\nAssistant: Yes, pizza can fit into a healthy diet! Enjoy a slice or two of regular pizza with plenty of vegetables. Balance it with a salad beforehand or extra veggies on top to increase fiber and reduce overall calorie intake."},
+    {"text": "User: How much water should I drink daily?\nAssistant: A common guideline is about 8 glasses a day, but individual needs vary. A better rule is to drink enough so your urine is light yellow. For exercise, drink 16-24 ounces of water for every pound lost during activity."},
+    {"text": "User: What's the best exercise for weight loss?\nAssistant: The best exercise is one you'll stick with! Combine cardio (walking, running, cycling) with strength training for the most effective results. Aim for 150 minutes of moderate activity weekly, plus 2-3 days of resistance training."},
+    {"text": "User: I'm stressed about eating too much.\nAssistant: Practice mindful eating: eat slowly, without distractions, and stop when satisfied. Keep healthy snacks available and don't restrict food—moderation beats deprivation. Consider journaling your feelings when urges hit."},
+    {"text": "User: What are good protein sources?\nAssistant: Excellent protein sources include chicken, fish, eggs, Greek yogurt, legumes, tofu, nuts, and seeds. Aim for 0.8-1g per pound of body weight daily if training. Mix plant and animal sources for a balanced amino acid profile."},
+    {"text": "User: How do I meal prep efficiently?\nAssistant: Set aside 2-3 hours on Sunday. Choose 2-3 proteins, 2-3 vegetables, and 1-2 grains. Portion them into containers for the week. Batch cook and cool before storing to maintain freshness and save time throughout the week."},
+    {"text": "User: Is it okay to skip meals?\nAssistant: Skipping meals often leads to overeating later and energy crashes. Regular meals every 3-4 hours stabilize blood sugar and metabolism. If you're not hungry, have a light snack instead of skipping entirely."},
+    {"text": "User: What's a healthy snack?\nAssistant: Great snacks include nuts, fruit, Greek yogurt, hummus with veggies, cheese, whole grain crackers, or a protein bar. Aim for snacks with protein and fiber to stay satisfied between meals. Avoid processed options high in sugar and sodium."},
+    {"text": "User: How can I improve my fitness?\nAssistant: Set realistic, specific goals. Start with activities you enjoy to build consistency. Gradually increase intensity and variety. Include cardio, strength training, and flexibility work. Track progress and adjust weekly as your fitness improves."},
+    {"text": "User: What should my calorie intake be?\nAssistant: Calorie needs vary by age, sex, activity level, and metabolism. A rough starting point is 10-14 calories per pound of body weight for maintenance. Use an online calculator or consult a nutritionist for personalized recommendations."},
+    {"text": "User: I want to gain muscle.\nAssistant: To build muscle, eat in a slight caloric surplus, prioritize protein (1g per lb body weight), do resistance training 3-5 days weekly, and get 7-9 hours of sleep. Progressive overload—gradually increasing weight—is key to muscle growth."},
+    {"text": "User: Why am I not losing weight?\nAssistant: Common reasons include miscounting calories, not eating enough protein, insufficient sleep, high stress, or an unrealistic timeline. Weight loss takes time. Ensure you're in a 300-500 calorie deficit, stay consistent for 4+ weeks, and measure beyond just scale weight."},
+    {"text": "User: Can I eat carbs and still lose weight?\nAssistant: Absolutely! Carbs don't cause weight gain—excess calories do. Focus on whole grain carbs, which are more filling and nutritious. Combine carbs with protein and fiber for sustained energy while losing weight at a healthy pace."},
+    {"text": "User: What's the difference between keto and intermittent fasting?\nAssistant: Keto restricts carbs to force ketosis; intermittent fasting restricts when you eat. Both can work for weight loss but have different pros and cons. Choose what fits your lifestyle best. Neither is objectively better—consistency matters more."},
+    {"text": "User: Should I take supplements?\nAssistant: Whole foods should be your priority. Supplements can fill gaps—like vitamin D in winter or B12 if vegan. Before any supplement, check your actual deficiencies with a doctor. Most healthy eaters don't need fancy supplements."},
+    {"text": "User: I crave sugar constantly.\nAssistant: Sugar cravings often signal under-eating or nutrient deficiency. Ensure you're eating enough protein, fats, and fiber. Drink water first—thirst masquerades as hunger. Gradually reduce sugar rather than going cold turkey, which often backfires."},
+    {"text": "User: How do I stay motivated?\nAssistant: Set process goals, not just outcome goals. Track habits like 'drink water daily' rather than 'lose 10 lbs.' Find an accountability partner, celebrate small wins, and remember why you started. Take progress photos—the scale doesn't show everything."},
+    {"text": "User: What's healthy aging and wellness?\nAssistant: Healthy aging involves consistent exercise, good nutrition, strong sleep, stress management, and social connections. Prioritize bone health with calcium/vitamin D, maintain muscle with resistance training, and stay mentally active. Regular health check-ups are essential."},
+]
+
+def create_training_file(output_path: str = "data/train.jsonl"):
+    """Create a JSONL training file with synthetic wellness data."""
+    output_file = Path(output_path)
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    
+    with open(output_file, 'w') as f:
+        for entry in training_data:
+            f.write(json.dumps(entry) + '\n')
+    
+    print(f"Created {output_file} with {len(training_data)} training examples.")
+
+if __name__ == "__main__":
+    create_training_file()
