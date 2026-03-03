@@ -161,6 +161,7 @@ API_PORT=8000
 - `GET /api/calorie/catalog` - Bengaluru-focused dishes and calorie estimates
 - `POST /api/calorie/quick-log` - Quick-log common Bengaluru meals using serving multipliers
 - `GET /api/calorie/daily-summary` - Daily calorie summary with Bangalore meal tips
+- `GET /preview/bangalore-calorie` - Static frontend preview for the Bangalore calorie tracker
 
 ### Activity & Wellness
 - `POST /api/activity/workout` - Log workout

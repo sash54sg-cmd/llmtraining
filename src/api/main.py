@@ -3,7 +3,7 @@ Main FastAPI application.
 """
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 import logging
 from src.config.database import init_db
 from src.config.config import API_HOST, API_PORT, LOG_LEVEL, LOG_FILE
@@ -70,6 +70,12 @@ async def health_check():
         "status": "healthy",
         "timestamp": "2026-01-21T10:21:18+05:30"
     }
+
+
+@app.get("/preview/bangalore-calorie", include_in_schema=False)
+async def bangalore_calorie_preview():
+    """Serve a lightweight frontend preview for the Bangalore calorie tracker."""
+    return FileResponse("frontend/bangalore_calorie_preview.html")
 
 
 # Global exception handler
