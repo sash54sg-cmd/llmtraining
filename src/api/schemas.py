@@ -142,6 +142,26 @@ class MultiModalResponse(BaseModel):
 
 
 # Dashboard schemas
+
+
+class BangaloreQuickLogRequest(BaseModel):
+    item_key: str
+    servings: float = Field(1.0, gt=0, le=4)
+    meal_type: Optional[str] = None
+    notes: Optional[str] = None
+
+
+class BangaloreDailySummaryResponse(BaseModel):
+    city: str
+    date: datetime
+    total_calories: float
+    target_calories: int
+    remaining_calories: float
+    total_protein_g: float
+    meal_count: int
+    tip: str
+
+
 class DashboardResponse(BaseModel):
     date: datetime
     nutrition: dict

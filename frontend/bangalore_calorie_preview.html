@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bengaluru Calorie Tracker Preview</title>
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #0f766e;
+      --accent-light: #ccfbf1;
+      --border: #e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    h1 { margin: 0 0 8px; }
+    .subtitle { color: var(--muted); margin-bottom: 20px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    }
+    .card h2 { margin-top: 0; font-size: 1.1rem; }
+    label { display: block; margin-top: 10px; font-size: 0.9rem; color: var(--muted); }
+    input, select, textarea, button {
+      width: 100%;
+      margin-top: 6px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.95rem;
+    }
+    button {
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    button:hover { filter: brightness(0.95); }
+    .pill {
+      display: inline-block;
+      background: var(--accent-light);
+      color: #115e59;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+    }
+    .dish-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+      max-height: 350px;
+      overflow-y: auto;
+    }
+    .dish-item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .dish-item strong { display: block; }
+    .meta { color: var(--muted); font-size: 0.85rem; }
+    .summary-value { font-size: 1.8rem; font-weight: 700; margin: 8px 0; }
+    .status {
+      margin-top: 10px;
+      background: #f9fafb;
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      color: var(--muted);
+      min-height: 44px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Bengaluru Calorie Tracker (Preview)</h1>
+    <p class="subtitle">A simple UI preview for the Bangalore-focused calorie APIs.</p>
+
+    <div class="grid">
+      <section class="card">
+        <span class="pill">City-aware catalog</span>
+        <h2>Local Dish Catalog</h2>
+        <button id="loadCatalog">Load Bengaluru Dishes</button>
+        <div id="catalog" class="dish-list"></div>
+      </section>
+
+      <section class="card">
+        <span class="pill">Quick meal logging</span>
+        <h2>Quick Log</h2>
+        <label>Item Key
+          <select id="itemKey"></select>
+        </label>
+        <label>Servings
+          <input id="servings" type="number" min="0.25" max="4" step="0.25" value="1" />
+        </label>
+        <label>Meal Type (optional)
+          <select id="mealType">
+            <option value="">Use default</option>
+            <option value="breakfast">Breakfast</option>
+            <option value="lunch">Lunch</option>
+            <option value="dinner">Dinner</option>
+            <option value="snack">Snack</option>
+          </select>
+        </label>
+        <label>Notes
+          <textarea id="notes" rows="3" placeholder="Optional notes..."></textarea>
+        </label>
+        <button id="quickLog">Log Meal</button>
+        <div id="quickLogStatus" class="status">Log status will appear here.</div>
+      </section>
+
+      <section class="card">
+        <span class="pill">Today's progress</span>
+        <h2>Daily Summary</h2>
+        <button id="loadSummary">Refresh Summary</button>
+        <div class="summary-value" id="remainingCalories">-- kcal</div>
+        <div id="summaryMeta" class="meta">No summary loaded yet.</div>
+        <div id="summaryTip" class="status">Bangalore-aware tip will appear here.</div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const emailHeader = { "X-User-Email": "preview.user@bengaluru.app" };
+
+    async function fetchJSON(url, options = {}) {
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...emailHeader,
+          ...(options.headers || {}),
+        },
+      });
+      if (!response.ok) {
+        const body = await response.text();
+        throw new Error(`HTTP ${response.status}: ${body}`);
+      }
+      return response.json();
+    }
+
+    function renderCatalog(items) {
+      const container = document.getElementById("catalog");
+      const itemKey = document.getElementById("itemKey");
+      container.innerHTML = "";
+      itemKey.innerHTML = "";
+
+      items.forEach((item) => {
+        const option = document.createElement("option");
+        option.value = item.key;
+        option.textContent = `${item.name} (${item.calories} kcal)`;
+        itemKey.appendChild(option);
+
+        const card = document.createElement("div");
+        card.className = "dish-item";
+        card.innerHTML = `
+          <strong>${item.name}</strong>
+          <span class="meta">${item.serving_description} • ${item.meal_type}</span>
+          <div class="meta">${item.calories} kcal | P ${item.protein_g}g | C ${item.carbs_g}g | F ${item.fat_g}g</div>
+          <div class="meta">${item.local_note}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    async function loadCatalog() {
+      const data = await fetchJSON("/api/calorie/catalog");
+      renderCatalog(data.items || []);
+    }
+
+    async function quickLog() {
+      const payload = {
+        item_key: document.getElementById("itemKey").value,
+        servings: Number(document.getElementById("servings").value || 1),
+        meal_type: document.getElementById("mealType").value || null,
+        notes: document.getElementById("notes").value || null,
+      };
+      const data = await fetchJSON("/api/calorie/quick-log", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+
+      document.getElementById("quickLogStatus").textContent =
+        `${data.message}. Logged ${data.nutrition.calories} kcal.`;
+      await loadSummary();
+    }
+
+    async function loadSummary() {
+      const data = await fetchJSON("/api/calorie/daily-summary");
+      document.getElementById("remainingCalories").textContent = `${data.remaining_calories} kcal left`;
+      document.getElementById("summaryMeta").textContent =
+        `Total: ${data.total_calories} / ${data.target_calories} kcal • Meals: ${data.meal_count} • Protein: ${data.total_protein_g}g`;
+      document.getElementById("summaryTip").textContent = data.tip;
+    }
+
+    async function init() {
+      try {
+        await loadCatalog();
+        await loadSummary();
+      } catch (error) {
+        document.getElementById("summaryTip").textContent = `Unable to load preview data: ${error.message}`;
+      }
+    }
+
+    document.getElementById("loadCatalog").addEventListener("click", loadCatalog);
+    document.getElementById("quickLog").addEventListener("click", quickLog);
+    document.getElementById("loadSummary").addEventListener("click", loadSummary);
+
+    init();
+  </script>
+</body>
+</html>
