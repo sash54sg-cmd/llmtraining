@@ -49,6 +49,13 @@ NUTRITION_DATABASE = {
     'chocolate': {'calories': 546, 'protein': 4.9, 'carbs': 61, 'fat': 31, 'fiber': 7, 'sugar': 48, 'sodium': 24},
     'yogurt': {'calories': 59, 'protein': 10, 'carbs': 3.6, 'fat': 0.4, 'fiber': 0, 'sugar': 3.2, 'sodium': 36},
     'nuts': {'calories': 607, 'protein': 20, 'carbs': 21, 'fat': 54, 'fiber': 8, 'sugar': 4, 'sodium': 18},
+
+    # Bangalore / Karnataka dishes
+    'idli sambar': {'calories': 110, 'protein': 4.5, 'carbs': 19, 'fat': 1.5, 'fiber': 2.5, 'sugar': 1, 'sodium': 90},
+    'set dosa': {'calories': 165, 'protein': 4, 'carbs': 24, 'fat': 5, 'fiber': 1.5, 'sugar': 1.2, 'sodium': 120},
+    'bisi bele bath': {'calories': 190, 'protein': 6, 'carbs': 29, 'fat': 6, 'fiber': 3, 'sugar': 1.5, 'sodium': 180},
+    'ragi mudde': {'calories': 130, 'protein': 3.5, 'carbs': 26, 'fat': 0.8, 'fiber': 2.2, 'sugar': 0.3, 'sodium': 8},
+    'akki rotti': {'calories': 155, 'protein': 3.5, 'carbs': 23, 'fat': 5, 'fiber': 2, 'sugar': 0.8, 'sodium': 110},
 }
 
 

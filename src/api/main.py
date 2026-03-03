@@ -84,13 +84,14 @@ async def global_exception_handler(request, exc):
 
 
 # Import and include routers
-from src.api.routes import auth_routes, user_routes, food_routes, activity_routes, chat_routes
+from src.api.routes import auth_routes, user_routes, food_routes, activity_routes, chat_routes, calorie_routes
 
 app.include_router(auth_routes.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(user_routes.router, prefix="/api/users", tags=["Users"])
 app.include_router(food_routes.router, prefix="/api/food", tags=["Food & Nutrition"])
 app.include_router(activity_routes.router, prefix="/api/activity", tags=["Activity & Wellness"])
 app.include_router(chat_routes.router, prefix="/api/chat", tags=["AI Chat"])
+app.include_router(calorie_routes.router, prefix="/api/calorie", tags=["Bangalore Calorie Tracker"])
 
 
 if __name__ == "__main__":
